@@ -22,9 +22,9 @@ lexer_state_t calc_next_state(char c)
         return SPECIAL1;
 #else
     default:
-        if ((ch >= '0' && ch <= '9') ||
-            (ch >= 'a' && ch <= 'z') ||
-            (ch >= 'A' && ch <= 'Z'))
+        if ((c >= '0' && c <= '9') ||
+            (c >= 'a' && c <= 'z') ||
+            (c >= 'A' && c <= 'Z'))
             return TERMINAL;
         return SPECIAL1;
 #endif
@@ -71,6 +71,11 @@ token_t extract_token(char *lexeme)
         t.kind = BRACE_CLOSING;
     else if (*lexeme == ';')
         t.kind = SEMICOLON;
+    else if (*lexeme == '+' || *lexeme == '-' || *lexeme == '*' || *lexeme == '/' || *lexeme == '>' || *lexeme == '<' || *lexeme == '=')
+    {
+        t.kind = EXPR_OPR;
+        strcpy(t.raw_value, lexeme);
+    }
     else if (strcmp(lexeme, ":=") == 0)
         t.kind = ASSIGN;
     else if (strcmp(lexeme, "print") == 0)

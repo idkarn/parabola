@@ -23,6 +23,7 @@ typedef enum
     ASSIGN,
     PRINT,
     INPUT,
+    EXPR_OPR,
 } token_kind;
 
 // ==== structs ====

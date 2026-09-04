@@ -83,6 +83,7 @@ void parse_operation_hp(parser_t *p)
         stack_pop(p->tokens, &tok);
         parse_token(p);
         stack_push(p->rpn, &(inst_t){.code = code});
+        stack_peek(p->tokens, &tok);
     } while (1);
 }
 
@@ -108,6 +109,7 @@ void parse_operation(parser_t *p)
         stack_pop(p->tokens, &tok);
         parse_operation_hp(p);
         stack_push(p->rpn, &(inst_t){.code = code});
+        stack_peek(p->tokens, &tok);
     } while (1);
 }
 

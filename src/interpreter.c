@@ -58,6 +58,9 @@ void intr_evaluate(interpreter_t *intr)
         case INST_PRINT:
             print(intr);
             break;
+        case SUM:
+            sum(intr);
+            break;
         default:
             break;
         }
