@@ -8,6 +8,7 @@
 
 typedef enum
 {
+    VAR_RAW,
     VAR_INT,
     VAR_FLOAT,
     VAR_BOOL,
@@ -32,5 +33,7 @@ typedef struct
 
 void vstore_set(vstore_t *vs, var_t *var);
 void vstore_get(vstore_t *vs, var_t *var);
+void print_vstore(vstore_t* vs);
+void vstore_init(vstore_t* vs);
 
 #endif

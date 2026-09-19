@@ -9,6 +9,7 @@
 #include "common.h"
 #include "tokens.h"
 #include "instructions.h"
+#include "variables.h"
 
 // ==== structures ====
 
@@ -23,5 +24,6 @@ typedef struct
 void parser_init(parser_t *p, token_t *tokens, size_t tokens_size);
 void parser_free(parser_t *p);
 void parse_prog(parser_t *p);
+void print_rpn(parser_t *p);
 
 #endif

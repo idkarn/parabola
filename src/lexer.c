@@ -37,7 +37,7 @@ char isnum(char *s)
     char *ptr = s;
     while (*ptr != 0)
     {
-        if (*ptr < '0' || *ptr > '9')
+        if ((*ptr < '0' || *ptr > '9') && (*ptr != '.'))
             return 0;
         ptr++;
     };
@@ -83,7 +83,9 @@ token_t extract_token(char *lexeme)
     else if (strcmp(lexeme, "input") == 0)
         t.kind = INPUT;
     else if (strcmp(lexeme, "int") == 0)
-        t = (token_t){.kind = TYPE, .raw_value = "int"};
+        t = (token_t){ .kind = TYPE, .raw_value = "int" };
+    else if (strcmp(lexeme, "float") == 0)
+        t = (token_t){ .kind = TYPE, .raw_value = "float" };
     else if (isnum(lexeme) /* || check for float */)
     {
         t.kind = VALUE;
@@ -163,4 +165,14 @@ size_t analyze_into(char *code, token_t *tokens)
         tokens[i++] = extract_token(temp);
 
     return i;
+}
+
+void print_tokens(token_t *toks, size_t n)
+{
+    printf("TOKENS:\n");
+    for (int j = 0; j < n; j++)
+    {
+        printf("%d, ", toks[j].kind);
+    }
+    printf("\nEND\n");
 }

@@ -9,21 +9,21 @@
 
 typedef enum
 {
-    NONE,
-    EOF_TOKEN,
-    SEMICOLON,
-    BRACE_OPEN,
-    BRACE_CLOSING,
-    PAR_OPEN,
-    PAR_CLOSING,
-    VALUE,
-    ID,
-    TYPE,
-    COMMA,
-    ASSIGN,
-    PRINT,
-    INPUT,
-    EXPR_OPR,
+    NONE,           // 0
+    EOF_TOKEN,      // 1
+    SEMICOLON,      // 2
+    BRACE_OPEN,     // 3
+    BRACE_CLOSING,  // 4
+    PAR_OPEN,       // 5
+    PAR_CLOSING,    // 6
+    VALUE,          // 7
+    ID,             // 8
+    TYPE,           // 9
+    COMMA,          // 10
+    ASSIGN,         // 11
+    PRINT,          // 12
+    INPUT,          // 13
+    EXPR_OPR,       // 14
 } token_kind;
 
 // ==== structs ====

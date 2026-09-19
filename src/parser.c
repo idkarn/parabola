@@ -36,7 +36,10 @@ void parse_token(parser_t *p)
     {
         stack_pop(p->tokens, &tok);
 
-        inst_t i = {.code = INST_VALUE};
+        inst_t i = {
+            .code = INST_VALUE,
+            .type = VAR_RAW,
+        };
 
         strcpy(i.repr, tok.raw_value);
         stack_push(p->rpn, &i);
@@ -256,4 +259,15 @@ void parse_prog(parser_t *p)
         parse_scope(p);
     else
         fprintf(stderr, "Syntax Error: EOF is not found"); // refactor: replace with internal err field
+}
+
+void print_rpn(parser_t *p)
+{
+    printf("RPN (size=%d):\n", p->rpn->size);
+    for (int j = 0; j < p->rpn->size; j++)
+    {
+        token_t *t = (char *)p->rpn->data + j * p->rpn->val_size;
+        printf("%d,", t->kind);
+    }
+    printf("\nEND\n");
 }

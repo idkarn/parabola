@@ -15,19 +15,57 @@ void assign(interpreter_t *intr)
     strcpy(v.name, id.repr);
     vstore_get(&intr->vars, &v);
 
-    switch (v.type)
-    { // todo: fill other
-    case VAR_FLOAT:
-        v.value = atof(val.repr);
-        break;
-    case VAR_INT:
-        v.value = atoi(val.repr);
-        break;
-    case VAR_BOOL:
-    default:
-        break;
+    if (val.code == INST_ID)
+    {
+        switch (v.type)
+        { // todo: fill other
+        case VAR_FLOAT:
+            v.value = atof(val.repr);
+            break;
+        case VAR_INT:
+            v.value = atoi(val.repr);
+            break;
+        case VAR_BOOL:
+        default:
+            break;
+        }
     }
-
+    else {
+        /*if (v.type != val.type)
+        {
+            printf("[assign] type mismatch!\n");
+            return;
+        }*/
+        switch (v.type)
+        {
+        case VAR_INT:
+            if (val.type == VAR_RAW)
+                v.value = atoi(val.repr);
+            else
+                v.value = val.as_int;
+            break;
+        case VAR_FLOAT:
+            if (val.type == VAR_RAW)
+                v.value = atof(val.repr);
+            else
+                v.value = val.as_float;
+            break;
+        default:
+            break;
+        }
+        /*switch (val.type)
+        {
+        case VAR_FLOAT:
+            v.value = val.as_float;
+            break;
+        case VAR_INT:
+            v.value = val.as_int;
+            break;
+        default:
+            break;
+        }*/
+    }
+    printf("[ASSGN] name=%s type=%d value=%f\n", v.name, v.type, v.value);
     vstore_set(&intr->vars, &v);
 }
 
@@ -36,22 +74,55 @@ void print(interpreter_t *intr)
     inst_t val;
     stack_pop(&intr->stack, &val);
 
-    float a = -1;
+    float f;
+    int i;
+    var_type t;
 
     if (val.code == INST_ID)
     {
         var_t v = {};
         strcpy(v.name, val.repr);
         vstore_get(&intr->vars, &v);
-        a = v.value;
+        printf("\nfound: name=%s v=%f\n", v.name, v.value);
+        t = v.type;
+        if (t == VAR_FLOAT)
+            f = v.value;
+        else if (t == VAR_INT)
+            i = (int)v.value;
     }
     else if (val.code == INST_VALUE) {
-        a = val.payload;
-        if (strlen(val.repr) > 0)
-            a = atoi(val.repr);
+        t = val.type;
+        switch (val.type)
+        {
+        case VAR_INT:
+            i = val.as_int;
+            if (strlen(val.repr) > 0)
+                i = atoi(val.repr);
+            break;
+        case VAR_RAW:
+        case VAR_FLOAT:
+            f = val.as_float;
+            if (strlen(val.repr) > 0)
+                f = atof(val.repr);
+            break;
+        default:
+            break;
+        }
     }
 
-    printf("%f\n", a);
+    switch (t)
+    {
+    case VAR_FLOAT:
+        printf("%f\n", f);
+        break;
+    case VAR_INT:
+        printf("%d\n", i);
+        break;
+    default:
+        printf("[PRNT] unknown type\n", i);
+        break;
+    }
+
     fflush(stdout);
 }
 
@@ -73,9 +144,22 @@ void sum(interpreter_t* intr)
         a = av.value;
     }
     else if (ai.code == INST_VALUE) {
-        a = ai.payload;
-        if (strlen(ai.repr) > 0)
-            a = atoi(ai.repr);
+        switch (ai.type)
+        {
+        case VAR_INT:
+            a = ai.as_int;
+            if (strlen(ai.repr) > 0)
+                a = atoi(ai.repr);
+            break;
+        case VAR_RAW:
+        case VAR_FLOAT:
+            a = ai.as_float;
+            if (strlen(ai.repr) > 0)
+                a = atof(ai.repr);
+            break;
+        default:
+            break;
+        }
     }
 
     if (bi.code == INST_ID)
@@ -86,10 +170,29 @@ void sum(interpreter_t* intr)
         b = bv.value;
     }
     else if (bi.code == INST_VALUE) {
-        b = bi.payload;
-        if (strlen(bi.repr) > 0)
-            b = atoi(bi.repr);
+        switch (bi.type)
+        {
+        case VAR_INT:
+            b = bi.as_int;
+            if (strlen(bi.repr) > 0)
+                b = atoi(bi.repr);
+            break;
+        case VAR_RAW:
+        case VAR_FLOAT:
+            b = bi.as_float;
+            if (strlen(bi.repr) > 0)
+                b = atof(bi.repr);
+            break;
+        default:
+            break;
+        }
     }
 
-    stack_push(&intr->stack, &(inst_t){.code = INST_VALUE, .payload = a + b});
+    stack_push(&intr->stack, &(inst_t){
+        .code = INST_VALUE,
+        .type = VAR_FLOAT,
+        .as_float = a + b,
+    });
 }
+
+// TODO: parse value from repr on parsing

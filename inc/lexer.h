@@ -29,5 +29,6 @@ typedef struct
 // ==== functions ====
 
 size_t analyze_into(char *code, token_t *tokens);
+void print_tokens(token_t* toks, size_t n);
 
 #endif

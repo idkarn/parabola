@@ -4,9 +4,11 @@
 
 void intr_init(interpreter_t *intr, stack_t *rpn)
 {
+    intr->pc = 0;
     intr->rpn = malloc(rpn->size * sizeof(inst_t));
     memcpy(intr->rpn, rpn->data, rpn->size * rpn->val_size);
     intr->size = rpn->size;
+    vstore_init(&intr->vars);
 
     stack_init(&intr->stack, sizeof(inst_t));
 }
@@ -22,8 +24,7 @@ void intr_evaluate(interpreter_t *intr)
 {
     while (intr->pc < intr->size)
     {
-        inst_t inst = intr->rpn[intr->pc];
-        intr->pc++;
+        inst_t inst = intr->rpn[intr->pc++];
 
         switch (inst.code)
         {
@@ -44,6 +45,8 @@ void intr_evaluate(interpreter_t *intr)
                     v.type = VAR_FLOAT;
                 else if (strcmp(inst.repr, "bool") == 0)
                     v.type = VAR_BOOL;
+
+                printf("[INST_TYPE] trying to define a variable...\n");
 
                 vstore_set(&intr->vars, &v);
             }
