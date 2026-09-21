@@ -2,7 +2,11 @@
 
 > Interpreter for the Parabola programming language
 
-## Syntax
+## Language
+
+**Parabola** is an experimental programming language inspired by [DreamBird](https://github.com/TodePond/GulfOfMexico) and influenced by JavaScript, Lua, and Go. I’m developing it as a project-based learning exercise for my Programming Languages Theory course.
+
+### Syntax
 
 ```ebnf
 program         = { statement } ;
