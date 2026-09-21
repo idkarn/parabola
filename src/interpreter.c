@@ -64,6 +64,52 @@ void intr_evaluate(interpreter_t *intr)
         case SUM:
             sum(intr);
             break;
+        case DIFF:
+            diff(intr);
+            break;
+        case INST_WHILE:
+        {
+            inst_t cond;
+
+            stack_pop(&intr->stack, &cond);
+
+            char is_true;
+
+            if (cond.code == INST_ID)
+            {
+                var_t v = {};
+                strcpy(v.name, cond.repr);
+                vstore_get(&intr->vars, &v);
+                is_true = v.value;
+            }
+            else
+            {
+                switch (cond.type)
+                {
+                case VAR_FLOAT:
+                    is_true = cond.as_float;
+                    printf("[WHILE] is_true=%d code=%d payload=%f, repr='%s'\n", is_true, cond.code, cond.as_float, cond.repr);
+                    break;
+                case VAR_INT:
+                    is_true = cond.as_int; // todo: replace with truthy()
+                    printf("[WHILE] is_true=%d code=%d payload=%d, repr='%s'\n", is_true, cond.code, cond.as_int, cond.repr);
+
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            if (is_true == 0)
+            {
+                intr->pc = inst.as_int;
+                printf("[WHILE] skip_to=%d\n", intr->pc);
+            }
+            break;
+        }
+        case INST_GOTO:
+            intr->pc = inst.as_int;
+            break;
         default:
             break;
         }

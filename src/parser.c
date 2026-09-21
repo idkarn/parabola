@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 static jmp_buf err_buf;
+static void parse_scope(parser_t *p);
 
 void parser_init(parser_t *p, token_t *tokens, size_t tokens_size)
 {
@@ -216,6 +217,43 @@ void parse_statement(parser_t *p)
         stack_pop(p->tokens, &par);
 
         stack_push(p->rpn, &(inst_t){.code = INST_PRINT});
+    }
+    else if (tok.kind == WHILE)
+    {
+        unsigned int start_pc = p->rpn->size;
+
+        // * GENERAL CONDITION PARSING
+        stack_pop(p->tokens, NULL); // throw away token
+
+        token_t par;
+        stack_peek(p->tokens, &par);
+        if (par.kind != PAR_OPEN)
+        {
+            printf("Syntax Error: parenthesis expected in condition\n");
+            longjmp(err_buf, 1);
+        }
+        stack_pop(p->tokens, NULL); // throw away token
+
+        parse_comparison(p);
+
+        stack_peek(p->tokens, &par);
+        if (par.kind != PAR_CLOSING)
+        {
+            printf("Syntax Error: closing parenthesis expected in condition\n");
+            longjmp(err_buf, 1);
+        }
+        stack_pop(p->tokens, NULL);
+        // * END
+
+        inst_t loop = {.code = INST_WHILE};
+        unsigned int a = p->rpn->size;
+        stack_push(p->rpn, &loop);
+
+        parse_scope(p);
+
+        ((inst_t *)p->rpn->data)[a].as_int = p->rpn->size + 1;
+
+        stack_push(p->rpn, &(inst_t){.code = INST_GOTO, .as_int = start_pc});
     }
 }
 

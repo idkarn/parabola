@@ -82,11 +82,13 @@ token_t extract_token(char *lexeme)
         t.kind = PRINT;
     else if (strcmp(lexeme, "input") == 0)
         t.kind = INPUT;
+    else if (strcmp(lexeme, "while") == 0)
+        t.kind = WHILE;
     else if (strcmp(lexeme, "int") == 0)
-        t = (token_t){ .kind = TYPE, .raw_value = "int" };
+        t = (token_t){.kind = TYPE, .raw_value = "int"};
     else if (strcmp(lexeme, "float") == 0)
-        t = (token_t){ .kind = TYPE, .raw_value = "float" };
-    else if (isnum(lexeme) /* || check for float */)
+        t = (token_t){.kind = TYPE, .raw_value = "float"};
+    else if (isnum(lexeme))
     {
         t.kind = VALUE;
         strcpy(t.raw_value, lexeme);

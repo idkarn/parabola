@@ -29,7 +29,8 @@ void stack_pop(stack_t *s, void *out_ptr)
     s->size--;
 
     void *src = (char *)s->data + s->size * s->val_size;
-    memcpy(out_ptr, src, s->val_size);
+    if (out_ptr != NULL)
+        memcpy(out_ptr, src, s->val_size);
 }
 
 void stack_peek(stack_t *s, void *out_ptr)

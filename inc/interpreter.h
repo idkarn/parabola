@@ -26,6 +26,7 @@ void intr_evaluate(interpreter_t *intr);
 
 void assign(interpreter_t *intr);
 void print(interpreter_t *intr);
-void sum(interpreter_t* intr);
+void sum(interpreter_t *intr);
+void diff(interpreter_t *intr);
 
 #endif
